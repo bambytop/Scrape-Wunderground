@@ -1,11 +1,11 @@
-Scrape Wunderground allows to scrape historical weather data from https://www.wunderground.com. 
+Scrape Wunderground allows you to scrape historical weather data from https://www.wunderground.com. 
 
 
-Two CSV files are created. 
-* temps.csv is all the data points for the day (from the time stamped tables).
-* NumEntries.csv shows how many entries/rows are in each dataframe per date. This csv is created because there are several dates that have incomplete data (ex: 1 row with only wind speed). The dates with 24 or more rows tend to look more reliable
+## Run create_csv_files.py to create csv files:
+* temps.csv will store all of the data points for the day (from the time stamped tables).
+* NumEntries.csv will show how many entries/rows are in each dataframe per date. This csv is created because there are several dates that have incomplete data (ex: 1 row with only wind speed). The dates with 24 or more rows tend to look more reliable
 
-
+## Run scrape_wunderground.py:
 
 Variable to set:
 

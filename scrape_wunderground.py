@@ -13,10 +13,12 @@ import pandas as pd
 
 
 #####Starting date ######
-date = datetime.datetime(2011,11,17)
+date = datetime.datetime(2015,9,18)
 
-##### The number of dates in a row to scrape
-pagesToScrape=365
+##### End Date
+endDate = datetime.datetime(2020,12,31)
+
+
 
 #####The first part of the url, the date gets appended to the end to get the history information
 ###### Exapmle: 'https://www.wunderground.com/history/daily/KSDF/date/2004-01-01'
@@ -45,29 +47,36 @@ def scrape_page(date, prefixURL, sleepTime, errorOccurs):
         print("There are", len(df), "rows for", str(date.date()))
         with open('NumEntries.csv', 'a', newline='') as file:
             writer = csv.writer(file)
-            if errorOccurs==False:
-                writer.writerow([str(date.date()),len(df)])
-            if errorOccurs==True:
-                writer.writerow([str(date.date()),len(df),"ERROR"])
+            writer.writerow([str(date.date()),len(df)])
 
 
 
-for i in range(pagesToScrape): 
+
+while date <= endDate:
     try:
         scrape_page(date,prefixURL,sleepTime=10, errorOccurs=False)
+        date += datetime.timedelta(days=1)   #increments date by one
+
     except IndexError as e:
         # Every so often an IndexError occurs likely due to not allowing enough waiting time. 
         # Instead of increasing the waiting time for each loop, this waits for the error and 
         # then reruns the function with a longer sleepTime. This doesn't cover 2 errors in a row.
         print("AN ERROR OCCURRED", str(e)) 
-        scrape_page(date,prefixURL,sleepTime=50, errorOccurs=True)
-    except TimeoutException as e:   # spotty wifi
-        print("AN ERROR OCCURRED", str(e)) 
-        time.sleep(120)  #wait 2 minutes if timoutexception raised and try again, spotty wifi
-        scrape_page(date,prefixURL,sleepTime=50, errorOccurs=True)
+        # scrape_page(date,prefixURL,sleepTime=60, errorOccurs=True)
+        time.sleep(360)  #wait 
+        with open('NumEntries.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["NEW ERROR, did not get df",str(e),str(date.date())])
+
+    except:   # spotty wifi
+        print("AN ERROR OCCURRED") 
+        time.sleep(360)  #wait if timoutexception raised and try again, spotty wifi
+        # scrape_page(date,prefixURL,sleepTime=60, errorOccurs=True)
+        with open('NumEntries.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["NEW ERROR, did not get df",str(date.date())])
 
 
-    date += datetime.timedelta(days=1)   #increments date by one
 
 
 
