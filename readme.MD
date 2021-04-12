@@ -10,6 +10,6 @@ Scrape Wunderground allows you to scrape historical weather data from https://ww
 Variable to set:
 
 * date - the starting date to start scraping
-* pagesToScrape -  The number of dates in a row to scrape
+* endDate - the date to stop scraping
 * prefixURL - The city/location of data to grab minus the date. Ex: 'https://www.wunderground.com/history/daily/KSDF/date/' . The date will be appended each time through the loop
 * You can also set sleepTime (different values in the try and except blocks) if you unhappy with the settings. (10 seconds is listed in robots.txt as of March 2020)

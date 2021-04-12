@@ -13,15 +13,17 @@ import pandas as pd
 
 
 #####Starting date ######
-date = datetime.datetime(2015,9,18)
+date = datetime.datetime(2020,11,9)
 
 ##### End Date
-endDate = datetime.datetime(2020,12,31)
+endDate = datetime.datetime(2021,3,20)
 
 
 
-#####The first part of the url, the date gets appended to the end to get the history information
-###### Exapmle: 'https://www.wunderground.com/history/daily/KSDF/date/2004-01-01'
+#####       The first part of the url
+######      Example: prefixURL = 'https://www.wunderground.com/history/daily/KSDF/date/'
+#######     The date will be appended to this in the url variable
+
 prefixURL = 'https://www.wunderground.com/history/daily/KSDF/date/'
 
 
@@ -57,12 +59,11 @@ while date <= endDate:
         scrape_page(date,prefixURL,sleepTime=10, errorOccurs=False)
         date += datetime.timedelta(days=1)   #increments date by one
 
+
+    ### If there is no information on that particular the except will run and the date will never increment!!!
+
     except IndexError as e:
-        # Every so often an IndexError occurs likely due to not allowing enough waiting time. 
-        # Instead of increasing the waiting time for each loop, this waits for the error and 
-        # then reruns the function with a longer sleepTime. This doesn't cover 2 errors in a row.
         print("AN ERROR OCCURRED", str(e)) 
-        # scrape_page(date,prefixURL,sleepTime=60, errorOccurs=True)
         time.sleep(360)  #wait 
         with open('NumEntries.csv', 'a', newline='') as file:
             writer = csv.writer(file)
@@ -71,7 +72,6 @@ while date <= endDate:
     except:   # spotty wifi
         print("AN ERROR OCCURRED") 
         time.sleep(360)  #wait if timoutexception raised and try again, spotty wifi
-        # scrape_page(date,prefixURL,sleepTime=60, errorOccurs=True)
         with open('NumEntries.csv', 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(["NEW ERROR, did not get df",str(date.date())])
