@@ -52,22 +52,27 @@ def scrape_page(date, prefixURL, sleepTime, errorOccurs):
             writer.writerow([str(date.date()),len(df)])
 
 
-
+errorTracker= 0
 
 while date <= endDate:
+    if errorTracker >=10: #if 10 or more errors occur, exit the while loop
+        print("There were ", errorTracker, " errors in a row, so the program stopped. Check the NumEntriesFile")
+        break
+
     try:
         scrape_page(date,prefixURL,sleepTime=10, errorOccurs=False)
         date += datetime.timedelta(days=1)   #increments date by one
+        errorTracker=0 # returns errorTracker to 0
 
-    ###
-    ###     If there is no information on that particular day the except block will run and the date will never increment!!!
-    ###
+    #### If the scrape_page() function runs and fails then the date is not incremented
+
     except IndexError as e:
         print("AN ERROR OCCURRED", str(e)) 
         time.sleep(360)  #wait 
         with open('NumEntries.csv', 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(["NEW ERROR, did not get df",str(e),str(date.date())])
+        errorTracker += 1
 
     except:   # spotty wifi
         print("AN ERROR OCCURRED") 
@@ -75,6 +80,7 @@ while date <= endDate:
         with open('NumEntries.csv', 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(["NEW ERROR, did not get df",str(date.date())])
+        errorTracker += 1
 
 
 
