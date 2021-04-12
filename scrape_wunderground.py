@@ -59,9 +59,9 @@ while date <= endDate:
         scrape_page(date,prefixURL,sleepTime=10, errorOccurs=False)
         date += datetime.timedelta(days=1)   #increments date by one
 
-
-    ### If there is no information on that particular the except will run and the date will never increment!!!
-
+    ###
+    ###     If there is no information on that particular day the except block will run and the date will never increment!!!
+    ###
     except IndexError as e:
         print("AN ERROR OCCURRED", str(e)) 
         time.sleep(360)  #wait 
