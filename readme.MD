@@ -1,4 +1,4 @@
-Scrape Wunderground allows you to scrape historical weather data from https://www.wunderground.com. 
+Scrape Wunderground allows you to scrape historical weather data from https://www.wunderground.com using Selenium webdriver.
 
 
 ## Run create_csv_files.py to create csv files:
