@@ -23,9 +23,12 @@ endDate = datetime.datetime(2021,3,20)
 #####       The first part of the url
 ######      Example: prefixURL = 'https://www.wunderground.com/history/daily/KSDF/date/'
 #######     The date will be appended to this in the url variable
+#######     different URL, different XPATH handling
 
-prefixURL = 'https://www.wunderground.com/history/daily/KSDF/date/'
-
+# URL 1
+# prefixURL = 'https://www.wunderground.com/history/daily/KSDF/date/'
+# URL 2
+prefixURL = 'https://www.wunderground.com/history/daily/id/palembang/WIPP/date/'
 
 
 def scrape_page(date, prefixURL, sleepTime, errorOccurs):
@@ -34,14 +37,32 @@ def scrape_page(date, prefixURL, sleepTime, errorOccurs):
         url = ''.join([prefixURL+str(date.date())])
         print("scraping:", url)
 
+        # xpath for URL 2
+        tbl_xpath = '//*[@id="inner-content"]/div[2]/div[1]/div[5]/div[1]/div/lib-city-history-observation/div/div[2]/table'
+        
         driver = webdriver.Chrome()
         driver.get(url)
-        tables = WebDriverWait(driver,20).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "table")))
+
+        # URL 1 driver handling
+        # tables = WebDriverWait(driver,20).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "table")))
+        # URL 2 driver handling
+        tables = WebDriverWait(driver,20).until(EC.presence_of_all_elements_located((By.XPATH,tbl_xpath)))
 
         time.sleep(sleepTime) #obey robots.txt, adds time to reduce errors
 
-        a = pd.read_html(tables[1].get_attribute('outerHTML'))
-        df=a[0]
+        # DF read html for URL 1
+        # a = pd.read_html(tables[1].get_attribute('outerHTML'))
+        # df=a[0]
+
+        # DF read html for URL 2
+        html_string = tables[0].get_attribute('outerHTML')
+        html_data = StringIO(html_string)
+        
+        a = pd.read_html(html_data)[0]
+        # print(f'Total tables: {len(a)}')
+        # print(a)
+        df=pd.DataFrame(a)
+        
         df = df[df['Time'].notna()] #drops rows
         df.insert(0, 'Date', date, allow_duplicates=True)
         print(df)
